@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayesha Irfan's Portfolio</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #ff6b6b;
+      --secondary: #4ecdc4;
+      --accent: #ffe66d;
+      --dark: #2c3e50;
+      --light: #f8f9fa;
+      --purple: #a8e6cf;
+      --orange: #ffd93d;
+      --pink: #ff8a80;
+      --blue: #81d4fa;
+      --green: #a5d6a7;
+      
+      --gradient-1: linear-gradient(135deg, #0e1347 0%, #67bde6 100%);
+      --gradient-2: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+      --gradient-3: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 100%);
+      --gradient-4: linear-gradient(135deg, #ffd93d 0%, #ff9f43 100%);
+      --gradient-5: linear-gradient(135deg, #ff8a80 0%, #ff7043 100%);
+      --gradient-6: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
+      
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.15);
+      --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.2);
+      --shadow-colored: 0 15px 35px rgba(255, 107, 107, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="20" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .portfolio-header {
+      background: var(--gradient-1);
+      color: white;
+      padding: 5rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portfolio-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .portfolio-title {
+      font-family: 'Crimson Text', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .portfolio-subtitle {
+      font-size: 1.3rem;
+      opacity: 0.95;
+      position: relative;
+      z-index: 2;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .floating-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+    .shape:nth-child(2) { width: 60px; height: 60px; top: 60%; right: 10%; animation-delay: 2s; }
+    .shape:nth-child(3) { width: 40px; height: 40px; top: 80%; left: 80%; animation-delay: 4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .about-section {
+      padding: 5rem 0;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      position: relative;
+    }
+
+    .about-card {
+      background: white;
+      border-radius: 30px;
+      box-shadow: var(--shadow-medium);
+      border: none;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      position: relative;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--gradient-2);
+    }
+
+    .about-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-strong);
+    }
+
+    .about-card .card-body {
+      padding: 4rem;
+    }
+
+    .about-title {
+      font-family: 'Crimson Text', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .about-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--gradient-2);
+      border-radius: 2px;
+    }
+
+    .about-text {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #555;
+      text-align: justify;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .about-text:last-child {
+      margin-bottom: 0;
+    }
+
+    .categories-section {
+      padding: 5rem 0;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .section-title {
+      font-family: 'Crimson Text', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: var(--gradient-2);
+      border-radius: 2px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: 25px;
+      box-shadow: var(--shadow-soft);
+      border: none;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      position: relative;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .category-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: var(--shadow-colored);
+    }
+
+    .category-card:nth-child(1) .category-header { background: var(--gradient-1); }
+    .category-card:nth-child(2) .category-header { background: var(--gradient-2); }
+    .category-card:nth-child(3) .category-header { background: var(--gradient-3); }
+    .category-card:nth-child(4) .category-header { background: var(--gradient-4); }
+    .category-card:nth-child(5) .category-header { background: var(--gradient-5); }
+    .category-card:nth-child(6) .category-header { background: var(--gradient-6); }
+    .category-card:nth-child(7) .category-header { background: var(--gradient-1); }
+    .category-card:nth-child(8) .category-header { background: var(--gradient-2); }
+    .category-card:nth-child(9) .category-header { background: var(--gradient-3); }
+
+    .category-header {
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .category-card:hover .category-header::before {
+      left: 100%;
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    .category-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: 0.5px;
+    }
+
+    .category-count {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .category-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease;
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    }
+
+    .category-content.expanded {
+      max-height: 3000px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .image-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .image-card:hover {
+      transform: scale(1.08) rotate(2deg);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.4s ease;
+    }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(255, 107, 107, 0.9), rgba(254, 202, 87, 0.9));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .image-card:hover .image-overlay {
+      opacity: 1;
+    }
+
+    .expand-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      font-size: 1.2rem;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      margin: 0 auto;
+      backdrop-filter: blur(10px);
+    }
+
+    .expand-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .expand-btn.rotated {
+      transform: rotate(180deg);
+    }
+
+    .expand-btn.rotated:hover {
+      transform: rotate(180deg) scale(1.1);
+    }
+
+    .modal-content {
+      border-radius: 25px;
+      overflow: hidden;
+      border: none;
+      box-shadow: var(--shadow-strong);
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-header {
+      background: var(--gradient-1);
+      color: white;
+      border: none;
+      padding: 2rem;
+    }
+
+    .modal-title {
+      font-family: 'Crimson Text', serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+
+    .btn-close {
+      filter: brightness(0) invert(1);
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-body {
+      padding: 0;
+      background: #f8f9fa;
+    }
+
+    .modal-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Scroll to top button */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: var(--gradient-1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow-colored);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(100px);
+    }
+
+    .scroll-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-top:hover {
+      transform: translateY(-5px) scale(1.1);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounceIn {
+      from, 20%, 53%, 80%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+        transform: translate3d(0, -30px, 0);
+      }
+      70% {
+        animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+        transform: translate3d(0, -15px, 0);
+      }
+      90% {
+        transform: translate3d(0,-4px,0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .bounce-in {
+      animation: bounceIn 1s ease forwards;
+    }
+
+    .animate-delay-1 { animation-delay: 0.1s; }
+    .animate-delay-2 { animation-delay: 0.2s; }
+    .animate-delay-3 { animation-delay: 0.3s; }
+    .animate-delay-4 { animation-delay: 0.4s; }
+    .animate-delay-5 { animation-delay: 0.5s; }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .portfolio-title {
+        font-size: 2.8rem;
+      }
+      
+      .about-card .card-body {
+        padding: 2.5rem;
+      }
+      
+      .category-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .image-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        padding: 1.5rem;
+      }
+      
+      .about-title, .section-title {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .portfolio-title {
+        font-size: 2.2rem;
+      }
+      
+      .about-card .card-body {
+        padding: 1.5rem;
+      }
+      
+      .category-header {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="portfolio-header">
+    <div class="floating-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+    <div class="container">
+      <h1 class="portfolio-title bounce-in">Ayesha Irfan</h1>
+      <p class="portfolio-subtitle fade-in-up animate-delay-2">Graphics Designer • Digital Artist • UI/UX Designer</p>
+    </div>
+  </header>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="container">
+      <div class="about-card fade-in-up animate-delay-1">
+        <div class="card-body">
+          <h2 class="about-title">About Me</h2>
+          <p class="about-text">
+            Hi! I'm Ayesha Irfan, a passionate and creative Graphics Designer, Digital Artist, and UI/UX Designer currently pursuing my Bachelor's degree in Graphic Design from Bahauddin Zakariya University, Multan. With a CGPA of 3.5/4.0 and a strong foundation in visual communication, I specialize in transforming ideas into compelling visuals.
+          </p>
+          <p class="about-text">
+            Over the past few years, I've worked as a Freelance Digital Artist and Post Designer on Fiverr, where I've successfully delivered over 100 custom digital artworks and social media post designs for clients worldwide. I also serve as a Graphics Designer at Metabiz Solutions, where I collaborate on branding, UI/UX layouts, and promotional content that strengthens brand identity and user engagement.
+          </p>
+          <p class="about-text">
+            I'm highly skilled in Photoshop, Illustrator, and Figma, with a keen eye for detail and a passion for design trends that speak to modern audiences. From banners and illustrations to intuitive user interfaces, my goal is always to deliver designs that are not only beautiful but also functional and impactful.
+          </p>
+          <p class="about-text">
+            <strong>Let's create something amazing together!</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="categories-section">
+    <div class="container">
+      <h2 class="section-title fade-in-up">Portfolio Categories</h2>
+      <div class="category-grid" id="categoryGrid">
+        <!-- Categories will be populated here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll to top button -->
+  <div class="scroll-top" id="scrollTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <!-- Modal for Image Preview -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Image Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="" id="modalImage" class="modal-img" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Enhanced portfolio data with icons
+    const portfolioData = {
+      'Story Book': {
+        icon: 'fas fa-book',
+        images: [
+          'story book a.png',
+          'story book b.png',
+          'story book c.png',
+          'story book cover.png',
+          'story book d.png',
+          'story book e.png',
+          'story book f.png',
+          'story book g.jpg',
+          'story book h.jpg',
+          'story book i.jpg',
+          'story book j.jpg',
+          'story book k.jpg'
+        ]
+      },
+      'Website Design': {
+        icon: 'fas fa-laptop-code',
+        images: Array.from({length: 31}, (_, i) => `jewelry Website design (${i+1}).png`)
+      },
+      'Character Design': {
+        icon: 'fas fa-user-astronaut',
+        images: [
+          'charachter design 1.jpg',
+          'charachter design 2.jpg',
+          'charachter design.jpg'
+        ]
+      },
+      'Illustration Poster': {
+        icon: 'fas fa-palette',
+        images: [
+          'illustration based poster 1.jpg',
+          'illustration based poster 2.jpg',
+          'illustration based poster.jpg',
+          'landscape illustration design.jpg'
+        ]
+      },
+      'Jewelry Branding': {
+        icon: 'fas fa-gem',
+        images: [
+          'jewelery newspaper ad.png',
+          'jewelry envelope.png',
+          'jewelry magazine ad.png',
+          'jewelry poster.png',
+          'jewlery bussines card.png',
+          'jewlry brochure back.png',
+          'jewlry brochure front.png'
+        ]
+      },
+      'Mango Packaging': {
+        icon: 'fas fa-box',
+        images: [
+          'mango packaging design 1.png',
+          'mango packaging design 2.png'
+        ]
+      },
+      'Mango Posts': {
+        icon: 'fas fa-images',
+        images: [
+          'mango post design 1.jpg',
+          'mango post design 2.jpg',
+          'mango post design 3.jpg',
+          'mango post design 4.jpg',
+          'mango post design 5.jpg',
+          'mango post design 6.jpg',
+          'mango post design.jpg',
+          'mango post design.png'
+        ]
+      },
+      'Poster Design': {
+        icon: 'fas fa-clipboard',
+        images: [
+          'mix media poster design.jpg',
+          'poster design.jpg'
+        ]
+      },
+      'Miscellaneous': {
+        icon: 'fas fa-star',
+        images: [
+          'IMG-20250703-WA0004.jpg',
+          'IMG-20250703-WA0019.jpg',
+          'Thumbnail.jpg'
+        ]
+      }
+    };
+
+    // Initialize the portfolio
+    function initializePortfolio() {
+      const categoryGrid = document.getElementById('categoryGrid');
+      let delay = 0;
+
+      Object.entries(portfolioData).forEach(([categoryName, categoryData]) => {
+        const categoryCard = createCategoryCard(categoryName, categoryData);
+        categoryCard.classList.add('fade-in-up');
+        categoryCard.style.animationDelay = `${delay * 0.15}s`;
+        categoryGrid.appendChild(categoryCard);
+        delay++;
+      });
+
+      // Initialize scroll to top functionality
+      initializeScrollToTop();
+    }
+
+    // Create category card
+    function createCategoryCard(categoryName, categoryData) {
+      const card = document.createElement('div');
+      card.className = 'category-card';
+      
+      const categoryId = categoryName.replace(/\s+/g, '-').toLowerCase();
+      
+      card.innerHTML = `
+        <div class="category-header" onclick="toggleCategory('${categoryId}')">
+          <i class="category-icon ${categoryData.icon}"></i>
+          <h3 class="category-name">${categoryName}</h3>
+          <p class="category-count">${categoryData.images.length} ${categoryData.images.length === 1 ? 'item' : 'items'}</p>
+          <button class="expand-btn" id="btn-${categoryId}">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+        <div class="category-content" id="content-${categoryId}">
+          <div class="image-grid">
+            ${categoryData.images.map(image => `
+              <div class="image-card" onclick="openImageModal('${image}')">
+                <img src="${image}" alt="${image}" onerror="this.style.display='none'">
+                <div class="image-overlay">
+                  <i class="fas fa-search-plus"></i>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Toggle category expansion
+    function toggleCategory(categoryId) {
+      const content = document.getElementById(`content-${categoryId}`);
+      const button = document.getElementById(`btn-${categoryId}`);
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        button.classList.remove('rotated');
+      } else {
+        // Close all other categories
+        document.querySelectorAll('.category-content').forEach(c => {
+          c.classList.remove('expanded');
+        });
+        document.querySelectorAll('.expand-btn').forEach(b => {
+          b.classList.remove('rotated');
+        });
+        
+        // Open selected category
+        content.classList.add('expanded');
+        button.classList.add('rotated');
+      }
+    }
+
+    // Open image modal
+    function openImageModal(imageSrc) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalTitle = document.getElementById('modalTitle');
+      
+      modalImage.src = imageSrc;
+      modalTitle.textContent = imageSrc.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+
+    // Initialize scroll to top functionality
+    function initializeScrollToTop() {
+      const scrollTopBtn = document.getElementById('scrollTop');
+      
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+          scrollTopBtn.classList.add('visible');
+        } else {
+          scrollTopBtn.classList.remove('visible');
+        }
+      });
+      
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', initializePortfolio);
+  </script>
+</body>
+</html>
