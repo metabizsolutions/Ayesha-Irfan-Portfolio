@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Ayesha Irfan — Creative Studio & Visual Design Portfolio</title>
   
   <!-- Google Fonts: Syne (Display), Plus Jakarta Sans (Body), Space Mono (HUD/Technical) -->
@@ -16,15 +16,15 @@
   <style>
     :root {
       --bg-deep: #07070c;
-      --bg-surface: rgba(18, 18, 28, 0.65);
-      --bg-glass: rgba(255, 255, 255, 0.04);
+      --bg-surface: rgba(18, 18, 28, 0.72);
+      --bg-glass: rgba(255, 255, 255, 0.045);
       --border-glass: rgba(255, 255, 255, 0.12);
-      --border-highlight: rgba(255, 255, 255, 0.28);
+      --border-highlight: rgba(255, 255, 255, 0.3);
       
       --text-main: #f4f4f8;
       --text-muted: #9496a8;
       
-      /* Dynamic Studio Accents (Switchable via HUD) */
+      /* Dynamic Studio Accents */
       --accent-primary: #ff2a85;
       --accent-secondary: #00f2fe;
       --accent-tertiary: #ffbe0b;
@@ -41,7 +41,14 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      cursor: none !important; /* Custom Designer Cursor Active */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Hide system cursor only on fine pointer devices (Desktops) */
+    @media (hover: hover) and (pointer: fine) {
+      * {
+        cursor: none !important;
+      }
     }
 
     html {
@@ -57,8 +64,6 @@
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
-      selection-background-color: var(--accent-primary);
-      selection-color: #fff;
     }
 
     ::selection {
@@ -67,7 +72,7 @@
     }
 
     /* ==========================================
-       3D WEBGL BACKGROUND & STUDIO OVERLAYS
+       3D WEBGL & 2D TOUCH RIBBON CANVASES
        ========================================== */
     #webgl-canvas {
       position: fixed;
@@ -79,24 +84,52 @@
       pointer-events: none;
     }
 
-    /* Subtle Artboard Grid & Noise Overlay */
+    #touch-fx-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9000;
+      pointer-events: none;
+    }
+
     .studio-grid-overlay {
       position: fixed;
       inset: 0;
       background-image: 
         linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-      background-size: 60px 60px;
+      background-size: 55px 55px;
       z-index: 1;
       pointer-events: none;
       mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 90%);
       -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 90%);
     }
 
-    /* Artboard Rulers */
-    .ruler-top {
+    /* Scroll Progress Bar at very top */
+    .scroll-progress-track {
       position: fixed;
       top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 9999;
+    }
+
+    .scroll-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+      box-shadow: 0 0 12px var(--accent-primary);
+      transition: width 0.08s linear;
+    }
+
+    /* Artboard Rulers (Desktop) */
+    .ruler-top {
+      position: fixed;
+      top: 3px;
       left: 0;
       right: 0;
       height: 22px;
@@ -129,7 +162,7 @@
     }
 
     /* ==========================================
-       CUSTOM GRAPHIC DESIGNER CURSOR
+       CUSTOM GRAPHIC DESIGNER CURSOR (DESKTOP)
        ========================================== */
     #cursor-wrapper {
       position: fixed;
@@ -137,6 +170,12 @@
       pointer-events: none;
       z-index: 99999;
       overflow: hidden;
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      #cursor-wrapper {
+        display: none !important;
+      }
     }
 
     .cursor-pen {
@@ -171,7 +210,6 @@
       z-index: 99999;
     }
 
-    /* Anchor Handles on Cursor Ring */
     .cursor-ring::before,
     .cursor-ring::after {
       content: '';
@@ -229,7 +267,7 @@
     }
 
     /* ==========================================
-       FLOATING NAVIGATION & DESIGNER DOCK
+       NAVIGATION: DESKTOP TOP + MOBILE BOTTOM DOCK
        ========================================== */
     .floating-nav {
       position: fixed;
@@ -237,29 +275,31 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 890;
-      background: rgba(14, 14, 24, 0.75);
+      background: rgba(14, 14, 24, 0.78);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: 100px;
-      padding: 0.5rem 0.75rem;
+      padding: 0.5rem 0.85rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 42, 133, 0.1);
+      max-width: 95vw;
     }
 
     .nav-brand {
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      padding: 0.4rem 1rem;
+      padding: 0.4rem 0.9rem;
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #fff;
       text-decoration: none;
       letter-spacing: -0.5px;
+      white-space: nowrap;
     }
 
     .brand-dot {
@@ -268,6 +308,7 @@
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
       box-shadow: 0 0 12px var(--accent-primary);
+      flex-shrink: 0;
     }
 
     .nav-links {
@@ -295,28 +336,98 @@
       background: rgba(255, 255, 255, 0.08);
     }
 
-    /* Color Swatch Switcher inside Nav */
     .swatch-group {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
       padding-left: 0.75rem;
       margin-left: 0.25rem;
       border-left: 1px solid var(--border-glass);
     }
 
     .swatch-btn {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.35);
       transition: transform 0.2s ease, border-color 0.2s ease;
+      flex-shrink: 0;
     }
 
     .swatch-btn:hover,
     .swatch-btn.active {
-      transform: scale(1.25);
+      transform: scale(1.22);
       border-color: #fff;
+    }
+
+    /* Mobile Touch Status Pill inside top bar */
+    .mobile-touch-badge {
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--accent-secondary);
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      padding: 0.3rem 0.65rem;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Mobile Bottom Creative Dock */
+    .mobile-bottom-dock {
+      display: none;
+      position: fixed;
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 420px;
+      background: rgba(14, 14, 24, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-highlight);
+      border-radius: 24px;
+      padding: 0.5rem 0.6rem;
+      z-index: 920;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 42, 133, 0.2);
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .dock-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 16px;
+      transition: all 0.25s var(--ease-out-expo);
+      background: transparent;
+      border: none;
+    }
+
+    .dock-item i {
+      font-size: 1.05rem;
+      transition: transform 0.25s ease;
+    }
+
+    .dock-item.active,
+    .dock-item:active {
+      color: #fff;
+      background: rgba(255, 42, 133, 0.18);
+    }
+
+    .dock-item.active i,
+    .dock-item:active i {
+      color: var(--accent-primary);
+      transform: translateY(-2px) scale(1.1);
     }
 
     /* ==========================================
@@ -331,6 +442,18 @@
       max-width: 1340px;
       margin: 0 auto;
       padding: 0 2rem;
+    }
+
+    /* Scroll Reveal Animations (Great for Mobile & Desktop) */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+    }
+
+    .reveal-on-scroll.in-view {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* ==========================================
@@ -364,8 +487,8 @@
       border: 1px solid rgba(0, 242, 254, 0.25);
       padding: 0.4rem 1rem;
       border-radius: 100px;
-      margin-bottom: 1.5rem;
-      letter-spacing: 1px;
+      margin-bottom: 1.4rem;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
     }
 
@@ -375,6 +498,7 @@
       background: var(--accent-secondary);
       border-radius: 50%;
       animation: pulseGlow 2s infinite;
+      flex-shrink: 0;
     }
 
     @keyframes pulseGlow {
@@ -384,11 +508,12 @@
 
     .hero-title {
       font-family: var(--font-display);
-      font-size: clamp(3.2rem, 6.5vw, 6.2rem);
+      font-size: clamp(2.5rem, 6vw, 6rem);
       font-weight: 800;
-      line-height: 0.96;
+      line-height: 0.98;
       letter-spacing: -0.03em;
       margin-bottom: 1.5rem;
+      word-break: break-word;
     }
 
     .hero-title .stroke-text {
@@ -412,14 +537,13 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Vector Bounding Box Effect around Name */
     .vector-selection-box {
       position: relative;
       display: inline-block;
-      padding: 0.1rem 0.6rem;
+      padding: 0.15rem 0.6rem;
       border: 1.5px solid var(--accent-primary);
-      background: rgba(255, 42, 133, 0.05);
-      margin-top: 0.3rem;
+      background: rgba(255, 42, 133, 0.06);
+      margin-top: 0.35rem;
     }
 
     .anchor-node {
@@ -436,20 +560,20 @@
 
     .hero-roles {
       font-family: var(--font-mono);
-      font-size: 1rem;
+      font-size: 0.92rem;
       color: var(--text-muted);
-      margin-bottom: 2.2rem;
+      margin-bottom: 2rem;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.65rem;
       align-items: center;
     }
 
     .role-badge {
       background: var(--bg-glass);
       border: 1px solid var(--border-glass);
-      padding: 0.4rem 0.9rem;
-      border-radius: 8px;
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
       color: var(--text-main);
       display: inline-flex;
       align-items: center;
@@ -461,16 +585,17 @@
       color: var(--accent-primary);
     }
 
-    .role-badge:hover {
+    .role-badge:hover,
+    .role-badge:active {
       border-color: var(--accent-primary);
-      transform: translateY(-3px);
-      background: rgba(255, 42, 133, 0.1);
+      transform: translateY(-2px);
+      background: rgba(255, 42, 133, 0.12);
     }
 
     .hero-cta-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.9rem;
       align-items: center;
     }
 
@@ -478,14 +603,15 @@
       position: relative;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.75rem;
-      padding: 1rem 2rem;
+      padding: 1rem 1.85rem;
       border-radius: 100px;
       font-family: var(--font-display);
       font-weight: 700;
       font-size: 0.95rem;
       text-decoration: none;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       overflow: hidden;
       transition: all 0.35s var(--ease-out-expo);
       border: none;
@@ -497,8 +623,9 @@
       box-shadow: 0 12px 35px rgba(255, 42, 133, 0.35);
     }
 
-    .btn-primary-glow:hover {
-      transform: translateY(-4px) scale(1.03);
+    .btn-primary-glow:hover,
+    .btn-primary-glow:active {
+      transform: translateY(-3px) scale(1.02);
       box-shadow: 0 18px 45px rgba(255, 42, 133, 0.55);
     }
 
@@ -509,20 +636,21 @@
       backdrop-filter: blur(12px);
     }
 
-    .btn-outline-glass:hover {
+    .btn-outline-glass:hover,
+    .btn-outline-glass:active {
       border-color: var(--accent-secondary);
       color: var(--accent-secondary);
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
-    /* Interactive 3D Inspector Widget on Right of Hero */
+    /* Interactive 3D Inspector Widget */
     .hero-inspector-card {
       background: var(--bg-surface);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border-glass);
       border-radius: 28px;
-      padding: 1.75rem;
+      padding: 1.6rem;
       box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
       transform-style: preserve-3d;
       position: relative;
@@ -532,11 +660,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 1rem;
-      margin-bottom: 1.25rem;
+      padding-bottom: 0.9rem;
+      margin-bottom: 1.1rem;
       border-bottom: 1px solid var(--border-glass);
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
     }
 
@@ -556,16 +684,28 @@
 
     .bezier-playground {
       width: 100%;
-      height: 200px;
-      background: rgba(7, 7, 12, 0.7);
+      height: 190px;
+      background: rgba(7, 7, 12, 0.75);
       border-radius: 16px;
       border: 1px solid var(--border-glass);
       position: relative;
       overflow: hidden;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.15rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      touch-action: none; /* Smooth finger dragging inside playground */
+    }
+
+    .bezier-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      opacity: 0.8;
     }
 
     .bezier-svg {
@@ -576,26 +716,27 @@
     .stats-mini-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
+      gap: 0.7rem;
     }
 
     .stat-box {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-glass);
       border-radius: 14px;
-      padding: 0.9rem;
+      padding: 0.85rem 0.5rem;
       text-align: center;
       transition: all 0.3s ease;
     }
 
-    .stat-box:hover {
+    .stat-box:hover,
+    .stat-box:active {
       border-color: var(--accent-secondary);
-      background: rgba(0, 242, 254, 0.06);
+      background: rgba(0, 242, 254, 0.08);
     }
 
     .stat-num {
       font-family: var(--font-display);
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: #fff;
       display: block;
@@ -603,7 +744,7 @@
 
     .stat-label {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: var(--text-muted);
       text-transform: uppercase;
     }
@@ -617,7 +758,7 @@
       background: rgba(255, 255, 255, 0.02);
       border-top: 1px solid var(--border-glass);
       border-bottom: 1px solid var(--border-glass);
-      padding: 1.1rem 0;
+      padding: 1rem 0;
       position: relative;
       z-index: 10;
       backdrop-filter: blur(10px);
@@ -629,10 +770,6 @@
       animation: scrollMarquee 28s linear infinite;
     }
 
-    .marquee-track:hover {
-      animation-play-state: paused;
-    }
-
     .marquee-item {
       display: flex;
       align-items: center;
@@ -640,7 +777,7 @@
       padding: 0 1.5rem;
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--text-muted);
@@ -665,19 +802,19 @@
        ABOUT & CREDENTIALS BENTO SECTION
        ========================================== */
     .section-padding {
-      padding: 7rem 0;
+      padding: 6.5rem 0;
     }
 
     .section-header-wrap {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      margin-bottom: 3.5rem;
+      margin-bottom: 3rem;
     }
 
     .section-eyebrow {
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: var(--accent-primary);
@@ -696,7 +833,7 @@
 
     .section-heading {
       font-family: var(--font-display);
-      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-size: clamp(2rem, 4vw, 3.4rem);
       font-weight: 800;
       letter-spacing: -0.02em;
       line-height: 1.1;
@@ -714,32 +851,27 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: 26px;
-      padding: 2.5rem;
+      padding: 2.25rem;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.35s ease, box-shadow 0.35s ease;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.3s ease;
       transform-style: preserve-3d;
     }
 
-    .bento-card:hover {
+    .bento-card:hover,
+    .bento-card:active {
       border-color: var(--border-highlight);
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
     }
 
-    .bento-bio {
-      grid-column: span 7;
-    }
-
+    .bento-bio { grid-column: span 7; }
     .bento-tools {
       grid-column: span 5;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-
-    .bento-experience {
-      grid-column: span 4;
-    }
+    .bento-experience { grid-column: span 4; }
 
     .bento-card-label {
       font-family: var(--font-mono);
@@ -752,10 +884,10 @@
     }
 
     .bio-paragraph {
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 1.02rem;
+      line-height: 1.78;
       color: #d0d2e0;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.2rem;
     }
 
     .bio-paragraph strong {
@@ -763,11 +895,10 @@
       font-weight: 600;
     }
 
-    /* Tool Dock Badges */
     .software-stack {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      gap: 0.85rem;
       margin-top: 1.25rem;
     }
 
@@ -775,24 +906,23 @@
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-glass);
       border-radius: 18px;
-      padding: 1.25rem 1rem;
+      padding: 1.15rem 0.6rem;
       text-align: center;
       transition: all 0.3s var(--ease-out-expo);
-      position: relative;
-      overflow: hidden;
     }
 
-    .software-pill:hover {
-      transform: translateY(-6px);
+    .software-pill:hover,
+    .software-pill:active {
+      transform: translateY(-5px);
       border-color: var(--accent-primary);
-      background: rgba(255, 42, 133, 0.08);
+      background: rgba(255, 42, 133, 0.1);
     }
 
     .sw-code {
       font-family: var(--font-display);
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: 800;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.25rem;
       display: block;
     }
 
@@ -802,7 +932,7 @@
 
     .sw-name {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
     }
 
@@ -817,21 +947,21 @@
       justify-content: center;
       font-size: 1.25rem;
       color: #fff;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.1rem;
     }
 
     .exp-title {
       font-family: var(--font-display);
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 0.35rem;
     }
 
     .exp-org {
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--accent-tertiary);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.7rem;
     }
 
     .exp-desc {
@@ -853,7 +983,7 @@
       border: 1px solid var(--border-glass);
       padding: 1rem 1.25rem;
       border-radius: 20px;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.25rem;
       backdrop-filter: blur(16px);
     }
 
@@ -864,18 +994,19 @@
     }
 
     .filter-pill {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-glass);
       color: var(--text-muted);
       font-family: var(--font-sans);
       font-size: 0.82rem;
       font-weight: 600;
-      padding: 0.5rem 1rem;
+      padding: 0.55rem 1rem;
       border-radius: 100px;
       transition: all 0.25s ease;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
+      white-space: nowrap;
     }
 
     .filter-pill:hover,
@@ -900,18 +1031,19 @@
       padding: 0.5rem 0.9rem;
       border-radius: 10px;
       transition: all 0.25s ease;
+      white-space: nowrap;
     }
 
-    .action-chip:hover {
+    .action-chip:hover,
+    .action-chip:active {
       border-color: var(--accent-secondary);
       color: var(--accent-secondary);
     }
 
-    /* Category Artboards Grid */
     .category-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.75rem;
       align-items: start;
     }
 
@@ -930,14 +1062,9 @@
     .category-card.expanded-card {
       grid-column: 1 / -1;
       border-color: var(--accent-secondary);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 40px rgba(0, 242, 254, 0.12);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.65), 0 0 35px rgba(0, 242, 254, 0.12);
     }
 
-    .category-card:hover {
-      border-color: var(--border-highlight);
-    }
-
-    /* Card Glare Effect */
     .card-glare {
       position: absolute;
       inset: 0;
@@ -953,12 +1080,12 @@
     }
 
     .category-header {
-      padding: 2rem;
+      padding: 1.75rem;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.25rem;
+      gap: 1rem;
       border-bottom: 1px solid transparent;
       transition: border-color 0.3s ease;
     }
@@ -971,26 +1098,26 @@
     .cat-header-left {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1.15rem;
+      min-width: 0;
     }
 
     .category-icon-wrap {
-      width: 60px;
-      height: 60px;
-      border-radius: 18px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       color: #fff;
-      position: relative;
       flex-shrink: 0;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
 
     .cat-meta-tag {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -1000,7 +1127,7 @@
 
     .category-name {
       font-family: var(--font-display);
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: #fff;
       margin: 0;
@@ -1011,18 +1138,18 @@
       align-items: center;
       gap: 0.35rem;
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--accent-secondary);
       background: rgba(0, 242, 254, 0.08);
       border: 1px solid rgba(0, 242, 254, 0.2);
-      padding: 0.25rem 0.65rem;
+      padding: 0.22rem 0.65rem;
       border-radius: 100px;
-      margin-top: 0.45rem;
+      margin-top: 0.4rem;
     }
 
     .expand-btn {
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border-glass);
@@ -1030,14 +1157,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.95rem;
       transition: all 0.35s var(--ease-out-expo);
       flex-shrink: 0;
-    }
-
-    .category-card:hover .expand-btn {
-      border-color: var(--accent-primary);
-      background: rgba(255, 42, 133, 0.15);
     }
 
     .expand-btn.rotated {
@@ -1046,7 +1168,6 @@
       border-color: var(--accent-primary);
     }
 
-    /* Expandable Artwork Gallery */
     .category-content {
       max-height: 0;
       overflow: hidden;
@@ -1054,14 +1175,14 @@
     }
 
     .category-content.expanded {
-      max-height: 5000px;
+      max-height: 6500px;
     }
 
     .image-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.25rem;
-      padding: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.15rem;
+      padding: 1.75rem;
     }
 
     .image-card {
@@ -1074,8 +1195,9 @@
       transition: all 0.4s var(--ease-out-expo);
     }
 
-    .image-card:hover {
-      transform: translateY(-6px) scale(1.02);
+    .image-card:hover,
+    .image-card:active {
+      transform: translateY(-5px) scale(1.02);
       border-color: var(--accent-secondary);
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
       z-index: 3;
@@ -1090,19 +1212,19 @@
     }
 
     .image-card:hover img {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
     .image-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(7, 7, 12, 0.92) 0%, rgba(7, 7, 12, 0.3) 60%, transparent 100%);
+      background: linear-gradient(to top, rgba(7, 7, 12, 0.92) 0%, rgba(7, 7, 12, 0.25) 55%, transparent 100%);
       opacity: 0;
       transition: opacity 0.35s ease;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 1.1rem;
+      padding: 1rem;
     }
 
     .image-card:hover .image-overlay {
@@ -1111,17 +1233,20 @@
 
     .img-caption-title {
       font-family: var(--font-display);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: #fff;
       text-transform: capitalize;
-      line-height: 1.25;
-      margin-bottom: 0.25rem;
+      line-height: 1.2;
+      margin-bottom: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .img-caption-meta {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: var(--accent-secondary);
       display: flex;
       align-items: center;
@@ -1134,7 +1259,7 @@
     .studio-modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(5, 5, 10, 0.92);
+      background: rgba(5, 5, 10, 0.94);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       z-index: 9500;
@@ -1144,7 +1269,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.35s var(--ease-out-expo);
-      padding: 2rem;
+      padding: 1.5rem;
     }
 
     .studio-modal-backdrop.open {
@@ -1155,7 +1280,7 @@
     .studio-modal-window {
       width: 100%;
       max-width: 1120px;
-      background: rgba(16, 16, 26, 0.95);
+      background: rgba(16, 16, 26, 0.96);
       border: 1px solid var(--border-highlight);
       border-radius: 24px;
       overflow: hidden;
@@ -1175,7 +1300,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 1.5rem;
+      gap: 0.75rem;
+      padding: 0.9rem 1.25rem;
       background: rgba(255, 255, 255, 0.03);
       border-bottom: 1px solid var(--border-glass);
     }
@@ -1183,32 +1309,38 @@
     .modal-artboard-info {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.7rem;
+      min-width: 0;
     }
 
     .modal-cat-badge {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       background: rgba(255, 42, 133, 0.15);
       color: var(--accent-primary);
       border: 1px solid rgba(255, 42, 133, 0.3);
-      padding: 0.25rem 0.65rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 6px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .modal-filename {
       font-family: var(--font-display);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #fff;
       text-transform: capitalize;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .modal-toolbar-btns {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
+      flex-shrink: 0;
     }
 
     .modal-tool-btn {
@@ -1224,7 +1356,8 @@
       transition: all 0.2s ease;
     }
 
-    .modal-tool-btn:hover {
+    .modal-tool-btn:hover,
+    .modal-tool-btn:active {
       background: var(--accent-primary);
       border-color: var(--accent-primary);
     }
@@ -1236,7 +1369,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1.5rem;
       background-image: 
         linear-gradient(45deg, #0b0b12 25%, transparent 25%), 
         linear-gradient(-45deg, #0b0b12 25%, transparent 25%), 
@@ -1244,12 +1377,13 @@
         linear-gradient(-45deg, transparent 75%, #0b0b12 75%);
       background-size: 24px 24px;
       background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
-      min-height: 420px;
+      min-height: 360px;
+      touch-action: pan-y;
     }
 
     .modal-preview-img {
       max-width: 100%;
-      max-height: 70vh;
+      max-height: 68vh;
       object-fit: contain;
       border-radius: 12px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
@@ -1257,15 +1391,15 @@
     }
 
     .modal-preview-img.zoomed {
-      transform: scale(1.55);
+      transform: scale(1.5);
     }
 
     .modal-nav-arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       background: rgba(14, 14, 24, 0.85);
       border: 1px solid var(--border-highlight);
@@ -1273,26 +1407,37 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       transition: all 0.25s ease;
       z-index: 10;
     }
 
-    .modal-nav-arrow:hover {
+    .modal-nav-arrow:hover,
+    .modal-nav-arrow:active {
       background: var(--accent-primary);
       border-color: var(--accent-primary);
-      transform: translateY(-50%) scale(1.1);
     }
 
-    .modal-nav-arrow.prev { left: 1.5rem; }
-    .modal-nav-arrow.next { right: 1.5rem; }
+    .modal-nav-arrow.prev { left: 1rem; }
+    .modal-nav-arrow.next { right: 1rem; }
+
+    .modal-swipe-hint {
+      display: none;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      padding: 0.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-top: 1px solid var(--border-glass);
+    }
 
     /* ==========================================
        FOOTER & SCROLL TOP
        ========================================== */
     .studio-footer {
       border-top: 1px solid var(--border-glass);
-      background: rgba(7, 7, 12, 0.9);
+      background: rgba(7, 7, 12, 0.92);
       padding: 4rem 0 3rem;
       position: relative;
       z-index: 10;
@@ -1302,16 +1447,16 @@
       background: linear-gradient(135deg, rgba(255, 42, 133, 0.12) 0%, rgba(0, 242, 254, 0.08) 100%);
       border: 1px solid var(--border-highlight);
       border-radius: 28px;
-      padding: 3.5rem;
+      padding: 3rem 2rem;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
       position: relative;
       overflow: hidden;
     }
 
     .footer-title {
       font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-size: clamp(1.75rem, 4vw, 3rem);
       font-weight: 800;
       margin-bottom: 1rem;
     }
@@ -1323,7 +1468,7 @@
       align-items: center;
       gap: 1rem;
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
     }
 
@@ -1331,15 +1476,15 @@
       position: fixed;
       bottom: 28px;
       right: 28px;
-      width: 54px;
-      height: 54px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       box-shadow: 0 12px 30px rgba(255, 42, 133, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.25);
       z-index: 880;
@@ -1353,16 +1498,13 @@
       transform: translateY(0);
     }
 
-    .scroll-top-orb:hover {
-      transform: translateY(-6px) scale(1.08);
-    }
-
     /* ==========================================
-       RESPONSIVE BREAKPOINTS
+       MOBILE-FIRST & SMALL SCREEN OPTIMIZATIONS
        ========================================== */
     @media (max-width: 992px) {
       .hero-grid {
         grid-template-columns: 1fr;
+        gap: 2.25rem;
       }
       .bento-bio,
       .bento-tools,
@@ -1372,45 +1514,215 @@
     }
 
     @media (max-width: 768px) {
-      * {
-        cursor: auto !important;
-      }
-      #cursor-wrapper,
-      .ruler-top {
+      .ruler-top,
+      .nav-links,
+      .scroll-top-orb {
         display: none !important;
       }
+
+      /* Compact Top Header + Active Touch Badge */
       .floating-nav {
-        top: 14px;
-        width: 92%;
+        top: 12px;
+        width: calc(100% - 24px);
         justify-content: space-between;
+        padding: 0.45rem 0.75rem;
       }
-      .nav-links {
+
+      .mobile-touch-badge {
+        display: inline-flex;
+      }
+
+      /* Show App-Style Bottom Dock on Mobile */
+      .mobile-bottom-dock {
+        display: flex;
+      }
+
+      .container-custom {
+        padding: 0 1.15rem;
+      }
+
+      .hero-section {
+        padding: 5.5rem 0 2.5rem;
+        min-height: auto;
+      }
+
+      .artboard-tag {
+        font-size: 0.65rem;
+        padding: 0.35rem 0.75rem;
+      }
+
+      .hero-title {
+        font-size: clamp(2.15rem, 9.5vw, 3.2rem);
+        line-height: 1.05;
+      }
+
+      .hero-roles {
+        font-size: 0.8rem;
+        gap: 0.45rem;
+      }
+
+      .role-badge {
+        padding: 0.38rem 0.75rem;
+      }
+
+      .hero-cta-group {
+        width: 100%;
+      }
+
+      .btn-creative {
+        width: 100%;
+        padding: 0.95rem 1.25rem;
+      }
+
+      .hero-inspector-card {
+        padding: 1.2rem;
+        border-radius: 22px;
+      }
+
+      .bezier-playground {
+        height: 155px;
+      }
+
+      .section-padding {
+        padding: 4rem 0;
+      }
+
+      .bento-card {
+        padding: 1.5rem;
+        border-radius: 22px;
+      }
+
+      /* Horizontal Swipeable Filter Pills on Mobile */
+      .studio-controls-bar {
+        padding: 0.85rem;
+        border-radius: 18px;
+        gap: 0.75rem;
+      }
+
+      .filter-pills-wrap {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .filter-pills-wrap::-webkit-scrollbar {
         display: none;
       }
+
+      .view-mode-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .action-chip {
+        flex: 1;
+        text-align: center;
+      }
+
       .category-grid {
         grid-template-columns: 1fr;
+        gap: 1.25rem;
       }
-      .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+
+      .category-header {
         padding: 1.25rem;
+      }
+
+      .category-icon-wrap {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+      }
+
+      .category-name {
+        font-size: 1.15rem;
+      }
+
+      .image-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 1rem;
+      }
+
+      /* Always show image caption bar on mobile since there is no hover */
+      .image-overlay {
+        opacity: 1;
+        background: linear-gradient(to top, rgba(7, 7, 12, 0.9) 0%, rgba(7, 7, 12, 0.15) 45%, transparent 100%);
+        padding: 0.65rem;
+      }
+
+      .img-caption-title {
+        font-size: 0.75rem;
+      }
+
+      .img-caption-meta {
+        font-size: 0.56rem;
+      }
+
+      /* Lightbox Mobile Adjustments */
+      .studio-modal-backdrop {
+        padding: 0.6rem;
+      }
+
+      .studio-modal-window {
+        max-height: 92vh;
+        border-radius: 18px;
+      }
+
+      .modal-swipe-hint {
+        display: block;
+      }
+
+      .modal-nav-arrow {
+        width: 38px;
+        height: 38px;
+      }
+
+      .studio-footer {
+        padding: 3rem 0 7.5rem; /* Extra bottom padding for Mobile Bottom Dock */
+      }
+
+      .footer-cta-box {
+        padding: 2rem 1.25rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats-mini-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
 
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress-track">
+    <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+  </div>
+
   <!-- 3D WebGL Background Canvas -->
   <canvas id="webgl-canvas"></canvas>
+
+  <!-- 2D Touch Paint & Particle Ribbon Canvas (Interactive on Mobile Touch & Desktop Click) -->
+  <canvas id="touch-fx-canvas"></canvas>
+
   <div class="studio-grid-overlay"></div>
 
-  <!-- Designer Artboard Top Ruler & Live Telemetry -->
+  <!-- Designer Artboard Top Ruler (Desktop) -->
   <div class="ruler-top">
-    <span>ARTBOARD // AYESHA_IRFAN_PORTFOLIO_V3.0</span>
+    <span>ARTBOARD // AYESHA_IRFAN_PORTFOLIO_V4.0</span>
     <div class="ruler-ticks"></div>
     <span id="hud-coords">X: 0000px &nbsp; Y: 0000px &nbsp; ZOOM: 100%</span>
   </div>
 
-  <!-- Custom Graphic Designer Vector Pen Cursor -->
+  <!-- Custom Graphic Designer Vector Pen Cursor (Desktop) -->
   <div id="cursor-wrapper">
     <div class="cursor-ring" id="cursorRing">
       <span class="cursor-label" id="cursorLabel">SELECT</span>
@@ -1427,7 +1739,7 @@
     </svg>
   </div>
 
-  <!-- Floating Studio Navigation & Color Swatch Switcher -->
+  <!-- Top Floating Studio Navigation -->
   <nav class="floating-nav">
     <a href="#hero" class="nav-brand" data-cursor="HOME">
       <span class="brand-dot"></span>
@@ -1438,22 +1750,49 @@
       <li><a href="#work" class="nav-link-item" data-cursor="GALLERY">Artboards (9)</a></li>
       <li><a href="#contact" class="nav-link-item" data-cursor="COLLAB">Collaborate</a></li>
     </ul>
+    <span class="mobile-touch-badge" id="gyroToggleBtn" onclick="enableMobileGyro()">
+      <i class="fas fa-wand-magic-sparkles"></i> Touch Paint Active
+    </span>
     <div class="swatch-group" title="Switch Studio Color Theme">
-      <button class="swatch-btn active" style="background: #ff2a85;" onclick="setStudioTheme('#ff2a85', '#00f2fe', '#ffbe0b', this)" data-cursor="MAGENTA"></button>
-      <button class="swatch-btn" style="background: #00f5d4;" onclick="setStudioTheme('#00f5d4', '#7b2cbf', '#fee440', this)" data-cursor="CYBER MINT"></button>
-      <button class="swatch-btn" style="background: #ff6b35;" onclick="setStudioTheme('#ff6b35', '#3a86ff', '#ffbe0b', this)" data-cursor="SOLAR"></button>
+      <button class="swatch-btn active" style="background: #ff2a85;" onclick="setStudioTheme('#ff2a85', '#00f2fe', '#ffbe0b', this)" data-cursor="MAGENTA" aria-label="Magenta Theme"></button>
+      <button class="swatch-btn" style="background: #00f5d4;" onclick="setStudioTheme('#00f5d4', '#7b2cbf', '#fee440', this)" data-cursor="CYBER MINT" aria-label="Cyber Mint Theme"></button>
+      <button class="swatch-btn" style="background: #ff6b35;" onclick="setStudioTheme('#ff6b35', '#3a86ff', '#ffbe0b', this)" data-cursor="SOLAR" aria-label="Solar Theme"></button>
     </div>
   </nav>
+
+  <!-- Mobile Bottom Creative App Dock -->
+  <div class="mobile-bottom-dock">
+    <a href="#hero" class="dock-item active">
+      <i class="fas fa-compass"></i>
+      <span>Stage</span>
+    </a>
+    <a href="#about" class="dock-item">
+      <i class="fas fa-user-pen"></i>
+      <span>Profile</span>
+    </a>
+    <a href="#work" class="dock-item">
+      <i class="fas fa-layer-group"></i>
+      <span>Art (69)</span>
+    </a>
+    <button class="dock-item" onclick="cycleStudioThemeMobile()">
+      <i class="fas fa-palette"></i>
+      <span>Theme</span>
+    </button>
+    <button class="dock-item" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <i class="fas fa-arrow-up"></i>
+      <span>Top</span>
+    </button>
+  </div>
 
   <main>
     <!-- HERO SECTION -->
     <section class="hero-section" id="hero">
       <div class="container-custom">
         <div class="hero-grid">
-          <div class="hero-left">
+          <div class="hero-left reveal-on-scroll in-view">
             <div class="artboard-tag">
               <span class="pulse-dot"></span>
-              <span>Interactive 3D Design Space • Multan, PK</span>
+              <span>Interactive 3D Design Studio • Multan, PK</span>
             </div>
 
             <h1 class="hero-title">
@@ -1487,13 +1826,13 @@
           </div>
 
           <!-- Interactive Vector Curve & Studio Telemetry Card -->
-          <div class="hero-inspector-card tilt-element" data-cursor="INTERACT">
+          <div class="hero-inspector-card tilt-element reveal-on-scroll" data-cursor="INTERACT">
             <div class="inspector-header">
               <div class="window-dots">
                 <span></span><span></span><span></span>
               </div>
               <span>VECTOR_PATH_SIMULATOR.AI</span>
-              <span>60 FPS</span>
+              <span>TOUCH / DRAG</span>
             </div>
 
             <div class="bezier-playground" id="bezierPlayground">
@@ -1512,8 +1851,9 @@
                 <!-- Control Nodes -->
                 <circle cx="40" cy="140" r="6" fill="#fff" stroke="var(--accent-primary)" stroke-width="3"/>
                 <circle cx="360" cy="140" r="6" fill="#fff" stroke="var(--accent-secondary)" stroke-width="3"/>
-                <circle id="controlNode" cx="200" cy="30" r="8" fill="var(--accent-tertiary)" stroke="#fff" stroke-width="2"/>
+                <circle id="controlNode" cx="200" cy="30" r="9" fill="var(--accent-tertiary)" stroke="#fff" stroke-width="2.5"/>
               </svg>
+              <span class="bezier-hint"><i class="fas fa-hand-pointer"></i> Drag Node</span>
             </div>
 
             <div class="stats-mini-grid">
@@ -1557,14 +1897,14 @@
     <!-- ABOUT & CREDENTIALS BENTO SECTION -->
     <section class="section-padding" id="about">
       <div class="container-custom">
-        <div class="section-header-wrap">
+        <div class="section-header-wrap reveal-on-scroll">
           <span class="section-eyebrow">01 // Designer Spec Sheet</span>
           <h2 class="section-heading">Crafting Visual Narratives</h2>
         </div>
 
         <div class="bento-grid">
           <!-- Main Bio Card -->
-          <div class="bento-card bento-bio tilt-element" data-cursor="READ BIO">
+          <div class="bento-card bento-bio tilt-element reveal-on-scroll" data-cursor="READ BIO">
             <span class="bento-card-label"><i class="fas fa-pen-nib"></i> Artist Statement</span>
             <p class="bio-paragraph">
               Hi! I'm <strong>Ayesha Irfan</strong>, a passionate and creative Graphics Designer, Digital Artist, and UI/UX Designer currently pursuing my Bachelor's degree in Graphic Design from <strong>Bahauddin Zakariya University, Multan</strong>. With a CGPA of <strong>3.36/4.0</strong> and a strong foundation in visual communication, I specialize in transforming ideas into compelling visuals.
@@ -1578,7 +1918,7 @@
           </div>
 
           <!-- Creative Suite Mastery Card -->
-          <div class="bento-card bento-tools tilt-element" data-cursor="TOOLKIT">
+          <div class="bento-card bento-tools tilt-element reveal-on-scroll" data-cursor="TOOLKIT">
             <div>
               <span class="bento-card-label"><i class="fas fa-sliders"></i> Core Creative Arsenal</span>
               <h3 class="exp-title">Industry-Standard Pipeline</h3>
@@ -1603,21 +1943,21 @@
           </div>
 
           <!-- Experience Pillars -->
-          <div class="bento-card bento-experience tilt-element" data-cursor="ACADEMIC">
+          <div class="bento-card bento-experience tilt-element reveal-on-scroll" data-cursor="ACADEMIC">
             <div class="exp-icon-box"><i class="fas fa-graduation-cap"></i></div>
             <h3 class="exp-title">B.S. Graphic Design</h3>
             <div class="exp-org">Bahauddin Zakariya University, Multan</div>
             <p class="exp-desc">Pursuing Bachelor's degree with a 3.36/4.0 CGPA, specializing in visual communication, typography, and digital illustration.</p>
           </div>
 
-          <div class="bento-card bento-experience tilt-element" data-cursor="FREELANCE">
+          <div class="bento-card bento-experience tilt-element reveal-on-scroll" data-cursor="FREELANCE">
             <div class="exp-icon-box"><i class="fas fa-globe"></i></div>
             <h3 class="exp-title">100+ Global Deliveries</h3>
             <div class="exp-org">Freelance Digital Artist • Fiverr</div>
             <p class="exp-desc">Delivered over 100 bespoke digital illustrations, character concepts, and high-converting social media post designs worldwide.</p>
           </div>
 
-          <div class="bento-card bento-experience tilt-element" data-cursor="AGENCY">
+          <div class="bento-card bento-experience tilt-element reveal-on-scroll" data-cursor="AGENCY">
             <div class="exp-icon-box"><i class="fas fa-briefcase"></i></div>
             <h3 class="exp-title">Graphics Designer</h3>
             <div class="exp-org">Metabiz Solutions</div>
@@ -1630,13 +1970,13 @@
     <!-- PORTFOLIO ARTBOARD GALLERY SECTION -->
     <section class="section-padding" id="work">
       <div class="container-custom">
-        <div class="section-header-wrap">
+        <div class="section-header-wrap reveal-on-scroll">
           <span class="section-eyebrow">02 // Master Artboard Archive</span>
           <h2 class="section-heading">Curated Design Categories</h2>
         </div>
 
         <!-- Interactive Filter & Expansion Bar -->
-        <div class="studio-controls-bar">
+        <div class="studio-controls-bar reveal-on-scroll">
           <div class="filter-pills-wrap" id="filterBar">
             <button class="filter-pill active" onclick="filterCategories('all', this)" data-cursor="SHOW ALL">
               <i class="fas fa-th-large"></i> All Artboards (9)
@@ -1661,7 +2001,7 @@
   <!-- FOOTER -->
   <footer class="studio-footer" id="contact">
     <div class="container-custom">
-      <div class="footer-cta-box tilt-element" data-cursor="LET'S TALK">
+      <div class="footer-cta-box tilt-element reveal-on-scroll" data-cursor="LET'S TALK">
         <span class="artboard-tag"><span class="pulse-dot"></span> Available for Creative Projects & UI/UX Roles</span>
         <h2 class="footer-title">Ready to Elevate Your Visual Identity?</h2>
         <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem;">
@@ -1675,17 +2015,17 @@
 
       <div class="footer-bottom">
         <span>© 2026 AYESHA IRFAN • GRAPHICS DESIGNER, DIGITAL ARTIST & UI/UX DESIGNER</span>
-        <span>DESIGNED IN AN INTERACTIVE 3D WEBGL ENVIRONMENT</span>
+        <span>3D WEBGL + TOUCH VECTOR RIBBON ENGINE</span>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll to Top Orb -->
+  <!-- Scroll to Top Orb (Desktop) -->
   <div class="scroll-top-orb" id="scrollTop" data-cursor="TOP">
     <i class="fas fa-arrow-up"></i>
   </div>
 
-  <!-- Custom Studio Lightbox Modal -->
+  <!-- Custom Studio Lightbox Modal (Supports Touch Swiping) -->
   <div class="studio-modal-backdrop" id="imageModal">
     <div class="studio-modal-window">
       <div class="studio-modal-topbar">
@@ -1694,10 +2034,10 @@
           <h4 class="modal-filename" id="modalTitle">Artwork Preview</h4>
         </div>
         <div class="modal-toolbar-btns">
-          <button class="modal-tool-btn" id="zoomToggleBtn" title="Toggle Zoom (150%)" data-cursor="ZOOM">
+          <button class="modal-tool-btn" id="zoomToggleBtn" title="Toggle Zoom" data-cursor="ZOOM">
             <i class="fas fa-search-plus"></i>
           </button>
-          <button class="modal-tool-btn" onclick="closeStudioModal()" title="Close (ESC)" data-cursor="CLOSE">
+          <button class="modal-tool-btn" onclick="closeStudioModal()" title="Close" data-cursor="CLOSE">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -1706,10 +2046,13 @@
         <button class="modal-nav-arrow prev" onclick="navigateModal(-1)" data-cursor="PREV">
           <i class="fas fa-chevron-left"></i>
         </button>
-        <img src="" id="modalImage" class="modal-preview-img" alt="Artwork Preview" data-cursor="DRAG / ZOOM">
+        <img src="" id="modalImage" class="modal-preview-img" alt="Artwork Preview" data-cursor="TAP ZOOM">
         <button class="modal-nav-arrow next" onclick="navigateModal(1)" data-cursor="NEXT">
           <i class="fas fa-chevron-right"></i>
         </button>
+      </div>
+      <div class="modal-swipe-hint">
+        <i class="fas fa-arrows-left-right"></i> Swipe Left / Right to Browse • Tap Image to Zoom
       </div>
     </div>
   </div>
@@ -1828,7 +2171,7 @@
     };
 
     /* ==========================================================================
-       2. SMART SVG ARTWORK FALLBACK GENERATOR (IF VIEWED WITHOUT LOCAL FILES)
+       2. SMART SVG ARTWORK FALLBACK GENERATOR
        ========================================================================== */
     function generateArtFallback(title, categoryName, index) {
       const palettes = [
@@ -1852,19 +2195,13 @@
           </linearGradient>
         </defs>
         <rect width="600" height="450" fill="url(#g)"/>
-        <g stroke="rgba(255,255,255,0.04)" stroke-width="1">
-          <line x1="0" y1="90" x2="600" y2="90"/><line x1="0" y1="180" x2="600" y2="180"/>
-          <line x1="0" y1="270" x2="600" y2="270"/><line x1="0" y1="360" x2="600" y2="360"/>
-          <line x1="120" y1="0" x2="120" y2="450"/><line x1="240" y1="0" x2="240" y2="450"/>
-          <line x1="360" y1="0" x2="360" y2="450"/><line x1="480" y1="0" x2="480" y2="450"/>
-        </g>
         <circle cx="460" cy="130" r="95" fill="url(#accent)" opacity="0.22"/>
         <circle cx="150" cy="330" r="120" fill="url(#accent)" opacity="0.12"/>
         <path d="M 80 340 Q 280 110 520 290" fill="none" stroke="url(#accent)" stroke-width="3.5" stroke-dasharray="6 6"/>
         <rect x="45" y="45" width="510" height="360" rx="16" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
         <text x="75" y="105" fill="${c2}" font-family="monospace" font-size="14" letter-spacing="2">ARTBOARD // ${categoryName.toUpperCase()}</text>
-        <text x="75" y="235" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="26">${cleanTitle}</text>
-        <text x="75" y="270" fill="#9496a8" font-family="monospace" font-size="13">Ayesha Irfan • Creative Studio Preview</text>
+        <text x="75" y="235" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="24">${cleanTitle}</text>
+        <text x="75" y="270" fill="#9496a8" font-family="monospace" font-size="13">Ayesha Irfan • Creative Studio</text>
       </svg>`;
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
@@ -1879,7 +2216,7 @@
       const categoryGrid = document.getElementById('categoryGrid');
       const filterBar = document.getElementById('filterBar');
 
-      Object.entries(portfolioData).forEach(([categoryName, categoryData], catIdx) => {
+      Object.entries(portfolioData).forEach(([categoryName, categoryData]) => {
         const categoryId = categoryName.replace(/\s+/g, '-').toLowerCase();
 
         // Populate Filter Pill
@@ -1892,19 +2229,19 @@
 
         // Populate Category Card
         const card = document.createElement('div');
-        card.className = 'category-card tilt-element';
+        card.className = 'category-card tilt-element reveal-on-scroll';
         card.id = `card-${categoryId}`;
         card.dataset.category = categoryId;
 
         const imagesHtml = categoryData.images.map((image, imgIdx) => {
           const globalIndex = flatGalleryList.length;
+          const fallbackSrc = generateArtFallback(image, categoryName, globalIndex);
           flatGalleryList.push({
             src: image,
             category: categoryName,
-            fallback: generateArtFallback(image, categoryName, globalIndex)
+            fallback: fallbackSrc
           });
           const cleanName = image.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-          const fallbackSrc = generateArtFallback(image, categoryName, globalIndex);
 
           return `
             <div class="image-card" onclick="openStudioModal(${globalIndex})" data-cursor="INSPECT">
@@ -1913,7 +2250,7 @@
                 <div class="img-caption-title">${cleanName}</div>
                 <div class="img-caption-meta">
                   <span>#${String(imgIdx + 1).padStart(2, '0')}</span>
-                  <span><i class="fas fa-expand"></i> FULL VIEW</span>
+                  <span><i class="fas fa-expand"></i> VIEW</span>
                 </div>
               </div>
             </div>
@@ -1950,11 +2287,12 @@
         categoryGrid.appendChild(card);
       });
 
-      // Expand the first category ("Story Book") by default so art is immediately visible
+      // Expand first category by default
       const firstId = Object.keys(portfolioData)[0].replace(/\s+/g, '-').toLowerCase();
       toggleCategory(firstId);
 
       initTiltAndGlare();
+      initScrollReveal();
     }
 
     function toggleCategory(categoryId) {
@@ -1963,7 +2301,6 @@
       const button = document.getElementById(`btn-${categoryId}`);
 
       const isExpanded = content.classList.contains('expanded');
-
       if (isExpanded) {
         content.classList.remove('expanded');
         button.classList.remove('rotated');
@@ -1996,15 +2333,14 @@
     function filterCategories(categoryId, btnEl) {
       document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
       btnEl.classList.add('active');
+      btnEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
       document.querySelectorAll('.category-card').forEach(card => {
         if (categoryId === 'all' || card.dataset.category === categoryId) {
           card.style.display = 'block';
           if (categoryId !== 'all') {
-            const content = card.querySelector('.category-content');
-            const btn = card.querySelector('.expand-btn');
-            content.classList.add('expanded');
-            btn.classList.add('rotated');
+            card.querySelector('.category-content').classList.add('expanded');
+            card.querySelector('.expand-btn').classList.add('rotated');
             card.classList.add('expanded-card');
           }
         } else {
@@ -2014,7 +2350,7 @@
     }
 
     /* ==========================================================================
-       4. STUDIO LIGHTBOX MODAL WITH KEYBOARD NAVIGATION & ZOOM
+       4. STUDIO LIGHTBOX MODAL WITH TOUCH SWIPE GESTURES
        ========================================================================== */
     function openStudioModal(globalIndex) {
       currentModalIndex = globalIndex;
@@ -2036,7 +2372,7 @@
       };
       modalImg.src = item.src;
       modalTitle.textContent = item.src.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-      modalBadge.textContent = `${item.category} • ${currentModalIndex + 1} / ${flatGalleryList.length}`;
+      modalBadge.textContent = `${item.category} • ${currentModalIndex + 1}/${flatGalleryList.length}`;
     }
 
     function navigateModal(direction) {
@@ -2063,6 +2399,20 @@
       }
     });
 
+    // Mobile Touch Swipe Left/Right inside Lightbox
+    let modalTouchStartX = 0;
+    const modalStage = document.getElementById('modalStage');
+    modalStage.addEventListener('touchstart', (e) => {
+      modalTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    modalStage.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].screenX - modalTouchStartX;
+      if (Math.abs(diffX) > 50) {
+        navigateModal(diffX < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+
     window.addEventListener('keydown', (e) => {
       const modalOpen = document.getElementById('imageModal').classList.contains('open');
       if (!modalOpen) return;
@@ -2072,7 +2422,141 @@
     });
 
     /* ==========================================================================
-       5. CUSTOM DESIGNER PEN CURSOR & INTERACTIVE BEZIER PLAYGROUND
+       5. 2D INTERACTIVE TOUCH VECTOR RIBBON & SPARKLE BURST (UNIQUE FOR MOBILE)
+       ========================================================================== */
+    function initTouchPaintEngine() {
+      const canvas = document.getElementById('touch-fx-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const trailPoints = [];
+      const burstParticles = [];
+
+      function getPrimaryColor() {
+        return getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim() || '#ff2a85';
+      }
+      function getSecondaryColor() {
+        return getComputedStyle(document.documentElement).getPropertyValue('--accent-secondary').trim() || '#00f2fe';
+      }
+
+      function addTouchPoint(x, y, createBurst = false) {
+        trailPoints.push({ x, y, age: 0, maxAge: 28 });
+
+        if (createBurst) {
+          const c1 = getPrimaryColor();
+          const c2 = getSecondaryColor();
+          for (let i = 0; i < 12; i++) {
+            const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.3;
+            const speed = 1.5 + Math.random() * 3.5;
+            burstParticles.push({
+              x,
+              y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              size: 2.5 + Math.random() * 3.5,
+              color: i % 2 === 0 ? c1 : c2,
+              alpha: 1,
+              isSquare: i % 3 === 0 // Designer vector anchor node look
+            });
+          }
+        }
+      }
+
+      // Listen to Touch Move & Touch Start (Mobile magic)
+      window.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        if (t) addTouchPoint(t.clientX, t.clientY, true);
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        if (t) addTouchPoint(t.clientX, t.clientY, Math.random() < 0.15);
+      }, { passive: true });
+
+      // Also give desktop clicks a burst
+      window.addEventListener('mousedown', (e) => {
+        addTouchPoint(e.clientX, e.clientY, true);
+      });
+
+      function renderTouchFX() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Glowing Bezier Ribbon Trail
+        if (trailPoints.length > 1) {
+          ctx.save();
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+
+          for (let i = 1; i < trailPoints.length; i++) {
+            const p0 = trailPoints[i - 1];
+            const p1 = trailPoints[i];
+            const life = 1 - p1.age / p1.maxAge;
+
+            ctx.beginPath();
+            ctx.moveTo(p0.x, p0.y);
+            ctx.lineTo(p1.x, p1.y);
+            ctx.strokeStyle = getPrimaryColor();
+            ctx.globalAlpha = Math.max(0, life * 0.75);
+            ctx.lineWidth = life * 6;
+            ctx.shadowColor = getSecondaryColor();
+            ctx.shadowBlur = 12;
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // Age trail points
+        for (let i = trailPoints.length - 1; i >= 0; i--) {
+          trailPoints[i].age++;
+          if (trailPoints[i].age >= trailPoints[i].maxAge) {
+            trailPoints.splice(i, 1);
+          }
+        }
+
+        // Draw Vector Anchor & Sparkle Particles
+        for (let i = burstParticles.length - 1; i >= 0; i--) {
+          const p = burstParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.028;
+
+          if (p.alpha <= 0) {
+            burstParticles.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+
+          if (p.isSquare) {
+            // Draw Designer Vector Anchor Node
+            ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+            ctx.strokeRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        requestAnimationFrame(renderTouchFX);
+      }
+      renderTouchFX();
+    }
+
+    /* ==========================================================================
+       6. CUSTOM DESIGNER PEN CURSOR & TOUCH/MOUSE BEZIER PLAYGROUND
        ========================================================================== */
     const cursorPen = document.getElementById('cursorPen');
     const cursorRing = document.getElementById('cursorRing');
@@ -2088,19 +2572,18 @@
       mouseX = e.clientX;
       mouseY = e.clientY;
 
-      cursorPen.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      if (cursorPen) {
+        cursorPen.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      }
 
-      // Live HUD Coordinates
       if (hudCoords) {
         hudCoords.innerHTML = `X: ${String(mouseX).padStart(4, '0')}px &nbsp; Y: ${String(mouseY).padStart(4, '0')}px &nbsp; SCROLL: ${Math.round(window.scrollY)}px`;
       }
 
-      // Hover Label Detection
       const hoverTarget = e.target.closest('[data-cursor], a, button');
       if (hoverTarget) {
         document.body.classList.add('cursor-hover');
-        const customText = hoverTarget.getAttribute('data-cursor') || 'SELECT';
-        cursorLabel.textContent = customText;
+        cursorLabel.textContent = hoverTarget.getAttribute('data-cursor') || 'SELECT';
       } else {
         document.body.classList.remove('cursor-hover');
       }
@@ -2112,54 +2595,61 @@
     function animateCursorRing() {
       ringX += (mouseX - ringX) * 0.18;
       ringY += (mouseY - ringY) * 0.18;
-      cursorRing.style.left = `${ringX}px`;
-      cursorRing.style.top = `${ringY}px`;
+      if (cursorRing) {
+        cursorRing.style.left = `${ringX}px`;
+        cursorRing.style.top = `${ringY}px`;
+      }
       requestAnimationFrame(animateCursorRing);
     }
     animateCursorRing();
 
-    // Interactive Bezier Playground in Hero
+    // Interactive Bezier Playground (Supports both Mouse & Mobile Touch Drag)
     const bezierPlayground = document.getElementById('bezierPlayground');
     const bezierCurve = document.getElementById('bezierCurve');
     const handleLine1 = document.getElementById('handleLine1');
     const handleLine2 = document.getElementById('handleLine2');
     const controlNode = document.getElementById('controlNode');
 
-    if (bezierPlayground) {
-      bezierPlayground.addEventListener('mousemove', (e) => {
-        const rect = bezierPlayground.getBoundingClientRect();
-        const relX = ((e.clientX - rect.left) / rect.width) * 400;
-        const relY = ((e.clientY - rect.top) / rect.height) * 180;
-        const clampedX = Math.max(30, Math.min(370, relX));
-        const clampedY = Math.max(15, Math.min(165, relY));
+    function updateBezierFromPoint(clientX, clientY) {
+      if (!bezierPlayground) return;
+      const rect = bezierPlayground.getBoundingClientRect();
+      const relX = ((clientX - rect.left) / rect.width) * 400;
+      const relY = ((clientY - rect.top) / rect.height) * 180;
+      const clampedX = Math.max(30, Math.min(370, relX));
+      const clampedY = Math.max(15, Math.min(165, relY));
 
-        bezierCurve.setAttribute('d', `M 40 140 Q ${clampedX} ${clampedY} 360 140`);
-        handleLine1.setAttribute('x2', clampedX);
-        handleLine1.setAttribute('y2', clampedY);
-        handleLine2.setAttribute('x2', clampedX);
-        handleLine2.setAttribute('y2', clampedY);
-        controlNode.setAttribute('cx', clampedX);
-        controlNode.setAttribute('cy', clampedY);
-      });
+      bezierCurve.setAttribute('d', `M 40 140 Q ${clampedX} ${clampedY} 360 140`);
+      handleLine1.setAttribute('x2', clampedX);
+      handleLine1.setAttribute('y2', clampedY);
+      handleLine2.setAttribute('x2', clampedX);
+      handleLine2.setAttribute('y2', clampedY);
+      controlNode.setAttribute('cx', clampedX);
+      controlNode.setAttribute('cy', clampedY);
+    }
+
+    if (bezierPlayground) {
+      bezierPlayground.addEventListener('mousemove', (e) => updateBezierFromPoint(e.clientX, e.clientY));
+      bezierPlayground.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        if (t) updateBezierFromPoint(t.clientX, t.clientY);
+      }, { passive: true });
     }
 
     /* ==========================================================================
-       6. 3D PERSPECTIVE TILT & GLARE PHYSICS FOR CARDS
+       7. DESKTOP TILT + MOBILE SCROLL REVEAL & GYROSCOPE PARALLAX
        ========================================================================== */
     function initTiltAndGlare() {
+      const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+      if (isTouchDevice) return;
+
       document.querySelectorAll('.tilt-element').forEach(card => {
         card.addEventListener('mousemove', (e) => {
-          // Disable heavy tilt if card is expanded full-width
           if (card.classList.contains('expanded-card')) return;
-
           const rect = card.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-
-          const rotateX = ((y - centerY) / centerY) * -4.5;
-          const rotateY = ((x - centerX) / centerX) * 4.5;
+          const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -4.5;
+          const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 4.5;
 
           card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
           card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
@@ -2172,10 +2662,48 @@
       });
     }
 
+    function initScrollReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    }
+
     /* ==========================================================================
-       7. THREE.JS 3D CREATIVE STUDIO ENVIRONMENT
+       8. THREE.JS 3D ENVIRONMENT (REACTIVE TO MOUSE, SCROLL & MOBILE GYRO)
        ========================================================================== */
     let threePrimaryMaterial, threeSecondaryMaterial;
+    let target3DX = 0;
+    let target3DY = 0;
+
+    function enableMobileGyro() {
+      const badge = document.getElementById('gyroToggleBtn');
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+              if (badge) badge.innerHTML = '<i class="fas fa-compass"></i> 3D Gyro Active';
+            }
+          })
+          .catch(console.error);
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+        if (badge) badge.innerHTML = '<i class="fas fa-compass"></i> 3D Motion Active';
+      }
+    }
+
+    function handleOrientation(event) {
+      const gamma = event.gamma || 0; // Left/Right tilt (-90 to 90)
+      const beta = event.beta || 0;   // Front/Back tilt (-180 to 180)
+      target3DX = (gamma / 45) * 3.5;
+      target3DY = ((beta - 45) / 45) * 3.5;
+    }
 
     function initThreeJSScene() {
       const canvas = document.getElementById('webgl-canvas');
@@ -2183,14 +2711,13 @@
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.z = 26;
+      camera.position.z = window.innerWidth < 768 ? 32 : 26;
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Studio Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
       scene.add(ambientLight);
 
       const pointLight1 = new THREE.PointLight(0xff2a85, 2.5, 100);
@@ -2201,7 +2728,6 @@
       pointLight2.position.set(-18, -15, 12);
       scene.add(pointLight2);
 
-      // Shared Materials
       threePrimaryMaterial = new THREE.MeshStandardMaterial({
         color: 0xff2a85,
         roughness: 0.25,
@@ -2221,65 +2747,68 @@
       const shapesGroup = new THREE.Group();
       scene.add(shapesGroup);
 
-      // 1. Creative Torus Knot (Right Side)
-      const torusKnotGeo = new THREE.TorusKnotGeometry(4.2, 1.1, 110, 16);
+      const torusKnotGeo = new THREE.TorusKnotGeometry(4.2, 1.1, 100, 16);
       const torusKnot = new THREE.Mesh(torusKnotGeo, threePrimaryMaterial);
-      torusKnot.position.set(13, 4, -4);
+      torusKnot.position.set(11, 5, -4);
       shapesGroup.add(torusKnot);
 
-      // 2. Wireframe Icosahedron (Left Side)
       const icoGeo = new THREE.IcosahedronGeometry(4.5, 1);
       const icoMesh = new THREE.Mesh(icoGeo, threeSecondaryMaterial);
-      icoMesh.position.set(-15, -5, -6);
+      icoMesh.position.set(-12, -5, -6);
       shapesGroup.add(icoMesh);
 
-      // 3. Floating Octahedrons & Rings
       const floatingMeshes = [torusKnot, icoMesh];
       const smallGeos = [
         new THREE.OctahedronGeometry(1.4, 0),
-        new THREE.TorusGeometry(1.6, 0.4, 16, 50),
+        new THREE.TorusGeometry(1.6, 0.4, 16, 42),
         new THREE.ConeGeometry(1.2, 2.4, 6)
       ];
 
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 11; i++) {
         const geo = smallGeos[i % smallGeos.length];
         const mat = i % 2 === 0 ? threePrimaryMaterial : threeSecondaryMaterial;
         const mesh = new THREE.Mesh(geo, mat);
         mesh.position.set(
-          (Math.random() - 0.5) * 48,
-          (Math.random() - 0.5) * 36,
-          (Math.random() - 0.5) * 18 - 8
+          (Math.random() - 0.5) * 42,
+          (Math.random() - 0.5) * 34,
+          (Math.random() - 0.5) * 16 - 8
         );
         mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
         shapesGroup.add(mesh);
         floatingMeshes.push(mesh);
       }
 
-      // 4. Starfield Particle Dust
-      const particlesCount = 360;
+      const particlesCount = 280;
       const posArray = new Float32Array(particlesCount * 3);
       for (let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 75;
+        posArray[i] = (Math.random() - 0.5) * 70;
       }
       const particlesGeo = new THREE.BufferGeometry();
       particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
       const particlesMat = new THREE.PointsMaterial({
-        size: 0.14,
+        size: 0.15,
         color: 0xffffff,
         transparent: true,
-        opacity: 0.55
+        opacity: 0.5
       });
       const particleMesh = new THREE.Points(particlesGeo, particlesMat);
       scene.add(particleMesh);
 
-      // Animation Loop Reactive to Cursor & Scroll
-      let targetX = 0;
-      let targetY = 0;
-
       window.addEventListener('mousemove', (e) => {
-        targetX = (e.clientX / window.innerWidth - 0.5) * 4;
-        targetY = -(e.clientY / window.innerHeight - 0.5) * 4;
+        target3DX = (e.clientX / window.innerWidth - 0.5) * 4;
+        target3DY = -(e.clientY / window.innerHeight - 0.5) * 4;
       });
+
+      window.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        if (t) {
+          target3DX = (t.clientX / window.innerWidth - 0.5) * 3.5;
+          target3DY = -(t.clientY / window.innerHeight - 0.5) * 3.5;
+        }
+      }, { passive: true });
+
+      // Automatically bind deviceorientation where supported without prompt
+      window.addEventListener('deviceorientation', handleOrientation);
 
       const clock = new THREE.Clock();
 
@@ -2288,17 +2817,16 @@
         const scrollY = window.scrollY;
 
         floatingMeshes.forEach((mesh, idx) => {
-          mesh.rotation.x += 0.003 * (idx % 2 === 0 ? 1 : -1);
-          mesh.rotation.y += 0.004;
+          mesh.rotation.x += 0.0035 * (idx % 2 === 0 ? 1 : -1);
+          mesh.rotation.y += 0.0045;
           mesh.position.y += Math.sin(elapsedTime * 1.2 + idx) * 0.008;
         });
 
         particleMesh.rotation.y = elapsedTime * 0.03;
 
-        // Smooth camera parallax
-        shapesGroup.position.x += (targetX - shapesGroup.position.x) * 0.05;
-        shapesGroup.position.y += (targetY + scrollY * 0.006 - shapesGroup.position.y) * 0.05;
-        shapesGroup.rotation.y = scrollY * 0.0004;
+        shapesGroup.position.x += (target3DX - shapesGroup.position.x) * 0.05;
+        shapesGroup.position.y += (target3DY + scrollY * 0.006 - shapesGroup.position.y) * 0.05;
+        shapesGroup.rotation.y = scrollY * 0.0005;
 
         renderer.render(scene, camera);
         requestAnimationFrame(animate3D);
@@ -2307,21 +2835,31 @@
 
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
+        camera.position.z = window.innerWidth < 768 ? 32 : 26;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
     }
 
     /* ==========================================================================
-       8. STUDIO COLOR THEME SWITCHER & SCROLL TO TOP
+       9. STUDIO COLOR THEME SWITCHER & MOBILE NAVIGATION DOCK SYNC
        ========================================================================== */
+    const studioThemes = [
+      { p: '#ff2a85', s: '#00f2fe', t: '#ffbe0b' },
+      { p: '#00f5d4', s: '#7b2cbf', t: '#fee440' },
+      { p: '#ff6b35', s: '#3a86ff', t: '#ffbe0b' }
+    ];
+    let currentThemeIdx = 0;
+
     function setStudioTheme(primary, secondary, tertiary, btnEl) {
       document.documentElement.style.setProperty('--accent-primary', primary);
       document.documentElement.style.setProperty('--accent-secondary', secondary);
       document.documentElement.style.setProperty('--accent-tertiary', tertiary);
 
-      document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
+      if (btnEl) {
+        document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
+        btnEl.classList.add('active');
+      }
 
       if (threePrimaryMaterial && threeSecondaryMaterial && window.THREE) {
         threePrimaryMaterial.color.set(primary);
@@ -2329,15 +2867,46 @@
       }
     }
 
-    function initializeScrollToTop() {
+    function cycleStudioThemeMobile() {
+      currentThemeIdx = (currentThemeIdx + 1) % studioThemes.length;
+      const theme = studioThemes[currentThemeIdx];
+      const swatches = document.querySelectorAll('.swatch-btn');
+      setStudioTheme(theme.p, theme.s, theme.t, swatches[currentThemeIdx]);
+    }
+
+    function initializeScrollTelemetry() {
       const scrollTopBtn = document.getElementById('scrollTop');
+      const progressBar = document.getElementById('scrollProgressBar');
+      const dockLinks = document.querySelectorAll('.mobile-bottom-dock a.dock-item');
+
       window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 350) {
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+        if (progressBar) progressBar.style.width = `${progress}%`;
+
+        if (scrollTop > 350) {
           scrollTopBtn.classList.add('visible');
         } else {
           scrollTopBtn.classList.remove('visible');
         }
-      });
+
+        // Update active state on Mobile Bottom Dock
+        const sections = ['hero', 'about', 'work'];
+        let currentSection = 'hero';
+        sections.forEach(secId => {
+          const el = document.getElementById(secId);
+          if (el && scrollTop >= el.offsetTop - 260) {
+            currentSection = secId;
+          }
+        });
+
+        dockLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
+        });
+      }, { passive: true });
+
       scrollTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
@@ -2346,7 +2915,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       initializePortfolio();
       initThreeJSScene();
-      initializeScrollToTop();
+      initTouchPaintEngine();
+      initializeScrollTelemetry();
     });
   </script>
 </body>
